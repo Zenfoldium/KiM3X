@@ -5,6 +5,9 @@ from dotenv import load_dotenv
 from discord import Embed
 import os
 from datetime import datetime
+from discord.ext.commands import Bot as BotBase
+from discord.ext.commands import CommandNotFound
+import dotenv
 load_dotenv()
 
 PREFIX ="%"
@@ -42,7 +45,24 @@ class Bot(BotBase):
         print("HE::O")
     
     async def on_disconnet(self):
-        print("Bot Disconnect")
+        print("Bot Disconnect")\
+    
+    async def on_error(self,err,*arg,**kwargs):
+        if err== "on_command_error":
+            await args[0].send("ERRROOOR")
+
+        channel = self.get_channel(848126501735890965)
+        await channel.send("error occuired")
+        raise
+
+    async def on_command_error(self, context, exception):
+        if isinstance(exception,CommandNotFound):
+            pass
+        elif hasattr(exception,"original"):
+            raise exception.original
+        else:
+            raise exception
+        # return await super().on_command_error(context, exception)
 
     async def on_ready (self):
         if not self.ready:
